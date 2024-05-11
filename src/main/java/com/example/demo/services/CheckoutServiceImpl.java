@@ -15,11 +15,11 @@ import java.util.UUID;
 public class CheckoutServiceImpl implements CheckoutService{
     private CartRepository cartRepository;
 
-    // private CartItemRepository cartItemRepository;
+    private CartItemRepository cartItemRepository;
 
     public CheckoutServiceImpl(CartRepository cartRepository, CartItemRepository cartItemRepository){
         this.cartRepository = cartRepository;
-        // this.cartItemRepository = cartItemRepository;
+        this.cartItemRepository = cartItemRepository;
     }
 
     @Override
@@ -36,7 +36,12 @@ public class CheckoutServiceImpl implements CheckoutService{
         cartItems.forEach(cartItem -> cartItem.setCart(cart));
 
         cartRepository.save(cart);
+        final Cart cart2 ;
+        cart2 = cartRepository.findAll().get(cartRepository.findAll().size()-1);
+        cartItems.forEach(cartItem -> cartItem.setCart(cart2));
+        cartItems.forEach(cartItem -> cartItemRepository.save(cartItem));
         return new PurchaseResponse(orderTrackingNumber);
+
     }
 
 }
